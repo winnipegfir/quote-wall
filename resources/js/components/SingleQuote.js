@@ -6,7 +6,8 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import QuoteCard from "./QuoteCard";
 import {Helmet, HelmetData} from "react-helmet-async";
 import {Button, ButtonGroup, Col, Row} from "react-bootstrap";
-import Swal from "sweetalert2";
+import Swal from 'sweetalert2/dist/sweetalert2.js';
+import '@sweetalert2/theme-dark';
 import {redirectToRandomQuote} from "../functions";
 
 const helmetData = new HelmetData({});

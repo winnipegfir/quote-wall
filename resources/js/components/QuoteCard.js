@@ -1,9 +1,8 @@
 import {Card} from "react-bootstrap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faShareSquare, faUpRightFromSquare} from "@fortawesome/free-solid-svg-icons";
-import Swal from "sweetalert2";
-import '@sweetalert2/theme-dark/dark.scss';
+import {faUpRightFromSquare} from "@fortawesome/free-solid-svg-icons";
 import {useNavigate} from "react-router-dom";
+import DOMPurify from "dompurify";
 
 export default function (props) {
     const quote = props.quote;
@@ -19,7 +18,7 @@ export default function (props) {
             <Card.Body className="d-flex flex-column">
                 <i className="mb-1" dangerouslySetInnerHTML={{ __html: niceQuote(quote.content) }} />
                 <div className="mt-auto d-flex flex-row text-white-50">
-                    <small>
+                    <small className="overflow-auto">
                         {quote.name ?? "Anonymous"}
                     </small>
                     <small className="ms-auto">
@@ -42,5 +41,5 @@ function niceDateTime(timestamp) {
 }
 
 function niceQuote(str){
-    return str.replace(/(?:\r\n|\r|\n)/g, '<br>');
+    return DOMPurify.sanitize(str.replace(/(?:\r\n|\r|\n)/g, '<br>'));
 }

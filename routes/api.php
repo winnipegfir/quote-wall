@@ -19,6 +19,5 @@ Route::prefix('quotes')->name('quotes.')->group(function () {
     Route::post('/', [QuoteController::class, 'store'])->name('store'); // ->middleware('throttle:3,5')
     Route::get('random', [QuoteController::class, 'random'])->name('random');
     Route::get('/{id}', [QuoteController::class, 'show'])->name('show');
-
 });
 

@@ -7,6 +7,8 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
+@import '~@sweetalert2/theme-dark/dark.scss';
+
 $background-color: #0d1117;
 $secondary-color: #161b22;
 
@@ -66,7 +68,7 @@ body::-webkit-scrollbar {
     max-height: 85vh;
 }
 
-textarea, input {
+textarea, input, select {
     color: white !important;
     background-color: $secondary-color !important;
     border-color: rgba(0, 0, 0, 0.5) !important;

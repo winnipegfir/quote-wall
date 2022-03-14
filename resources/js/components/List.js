@@ -42,7 +42,13 @@ export default function () {
     }
 
     function handleScroll() {
-        if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight)
+        let userScrollHeight = window.innerHeight + window.scrollY;
+        let windowBottomHeight = document.documentElement.offsetHeight - 500;
+
+        console.log("user", userScrollHeight);
+        console.log("bottom", windowBottomHeight);
+
+        if (userScrollHeight < windowBottomHeight)
             return;
 
         setFetching(true);
@@ -63,13 +69,10 @@ export default function () {
     }, [fetching]);
 
     return (
-        <>
+        <div style={{ minHeight: "96vh" }}>
             <Helmet helmetData={helmetData}>
                 <title>Winnipeg FIR Quotes</title>
-                <meta property="og:title" content="Winnipeg FIR Quotes" />
-
                 <meta property="description" content="All the greatest moments caught in the Winnipeg FIR... if you're on here somewhere, we're sorry." />
-                <meta property="og:description" content="All the greatest moments caught in the Winnipeg FIR... if you're on here somewhere, we're sorry." />
             </Helmet>
 
             <Container fluid>
@@ -89,12 +92,12 @@ export default function () {
                         )}
                         {
                             end && (
-                                <small className="text-white-50 fst-italic">You've reached the end... for now</small>
+                                <small className="text-white-50 fst-italic">You've reached the end... for <b>now</b></small>
                             )
                         }
                     </Col>
                 </Row>
             </Container>
-        </>
+        </div>
     );
 }

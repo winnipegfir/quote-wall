@@ -1,7 +1,7 @@
 import {Button, Form, Modal} from "react-bootstrap";
 import {useState} from "react";
-import Swal from "sweetalert2";
-import '@sweetalert2/theme-dark/dark.scss';
+import Swal from 'sweetalert2/dist/sweetalert2.js';
+import '@sweetalert2/theme-dark';
 
 export default function (props) {
     const { show, onClose } = props;
@@ -20,6 +20,10 @@ export default function (props) {
 
         if (name !== null && name !== undefined)
             formData.append('name', name);
+
+        // Clean variables
+        setQuote(null);
+        setName(null);
 
         await axios.post('/api/quotes', formData)
             .then((res) => {
@@ -65,17 +69,17 @@ export default function (props) {
                     <Modal.Title>Create Quote</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form>
+                    <Form onSubmit={handleSubmit}>
                         <Form.Group controlId="formQuote">
-                            <Form.Control as="textarea" aria-required={true} aria-valuemax={65535} placeholder={"Enter quote here..."} onChange={(event => setQuote(event.target.value))} />
+                            <Form.Control as="textarea" required={true} max={1000} placeholder={"Enter quote here..."} onChange={(event => setQuote(event.target.value))} />
                             <Form.Text>Accepts <code>&lt;b&gt;</code> tags.</Form.Text>
                         </Form.Group>
                         <br />
                         <Form.Group controlId="formName">
-                            <Form.Control aria-valuemax={255} placeholder={"Name for submission (optional)"} onChange={(event => setName(event.target.value))} />
+                            <Form.Control max={40} placeholder={"Name for submission (optional)"} onChange={(event => setName(event.target.value))} />
                         </Form.Group>
+                        <Button size="sm" type="submit" variant="success" className="mt-4 w-100">Submit</Button>
                     </Form>
-                    <Button size="sm" variant="success" className="mt-4 w-100" onClick={handleSubmit}>Submit</Button>
                 </Modal.Body>
             </Modal>
         </>

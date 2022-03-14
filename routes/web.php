@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Models\Quote;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +17,54 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::prefix('auth')->group(function () {
+    Route::get('login/redirect', [LoginController::class, 'redirect'])->name('redirect');
+
+    Route::get('logout', function () {
+        \Illuminate\Support\Facades\Auth::logout();
+
+        return redirect("/");
+    })->name('logout');
+});
+
+Route::prefix('api')->group(function () {
+    Route::prefix('admin')->group(function () {
+        Route::get('authenticated', function () {
+            return response()->json(['auth' => \Illuminate\Support\Facades\Auth::check()]);
+        });
+
+        Route::get('user', [UserController::class, 'me']);
+
+        Route::group(['prefix' => 'quotes', 'middleware' => 'permission:is_admin'], function () {
+            Route::get('numbers', [\App\Http\Controllers\Admin\QuoteController::class, 'getStatusNumbers']);
+            Route::get('status/{status}', [\App\Http\Controllers\Admin\QuoteController::class, 'getQuotesByStatus']);
+            Route::post('{uuid}', [\App\Http\Controllers\Admin\QuoteController::class, 'updateQuote']);
+        });
+
+        Route::group(['prefix' => 'users', 'middleware' => 'permission:is_super_admin'], function () {
+            Route::get('/', [UserController::class, 'getUsers']);
+            Route::post('/', [UserController::class, 'createUser']);
+            Route::get('/{cid}/toggle', [UserController::class, 'toggleUserAdmin']);
+            Route::post('/{cid}/name', [UserController::class, 'updateName']);
+        });
+    });
+
+    Route::prefix('auth')->group(function () {
+        Route::get('callback', [LoginController::class, 'callback']);
+    });
+});
+
+
+
 Route::get('{any}', function () {
-    return view('app');
+    $quote = null;
+
+    if (Request::segment(1) == "quote") {
+        $quote = Quote::find(Request::segment(2));
+
+        if (!$quote || $quote->status !== Quote::APPROVED)
+            $quote = null;
+    }
+
+    return view('app', compact('quote'));
 })->where('any', '.*');

@@ -13,8 +13,14 @@
         <meta name="msapplication-TileColor" content="#4285f4">
         <meta name="theme-color" content="#4285f4">
 
+        <!-- Title -->
+        <title>{{ $quote ? "Quote by " . ($quote->name ?? "Anonymous") : "Winnipeg FIR Quote Wall" }}</title>
+        <meta property="description" content="{{ $quote ? strip_tags($quote->content) : "All the greatest moments caught in the Winnipeg FIR... if you're on here somewhere, we're sorry." }}">
+
         <!-- Open Graph Tags -->
-        <meta property="og:site_name" content="Winnipeg FIR Quote Wall">
+        <meta property="og:site_title" content="Winnipeg FIR Quote Wall" >
+        <meta property="og:title" content="{{ $quote ? "Quote by " . ($quote->name ?? "Anonymous") . " | Winnipeg FIR Quote Wall" : "Winnipeg FIR Quote Wall" }}">
+        <meta property="og:description" content="{{ $quote ? strip_tags($quote->content) : "All the greatest moments caught in the Winnipeg FIR... if you're on here somewhere, we're sorry." }}">
         <meta property="og:type" content="website">
         <meta property="og:url" content="{{ url()->current() }}">
 

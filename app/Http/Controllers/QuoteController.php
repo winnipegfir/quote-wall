@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendWebhook;
+use App\Models\AuditLog;
 use App\Models\Quote;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Woeler\DiscordPhp\Exception\DiscordInvalidResponseException;
+use Woeler\DiscordPhp\Message\DiscordEmbedMessage;
+use Woeler\DiscordPhp\Webhook\DiscordWebhook;
 
 class QuoteController extends Controller
 {
@@ -18,7 +23,7 @@ class QuoteController extends Controller
         $quotes = Quote::query()
             ->where('status', Quote::APPROVED)
             ->orderByDesc('created_at')
-            ->cursorPaginate(30);
+            ->cursorPaginate(100);
 
         return response()->json($quotes);
     }
@@ -32,15 +37,26 @@ class QuoteController extends Controller
     public function store(Request $request): JsonResponse
     {
         $request->validate([
-            'content' => ['required', 'max:65535'],
-            'name' => ['string', 'max:255']
+            'content' => ['required', 'max:1000'],
+            'name' => ['string', 'max:40']
         ]);
+
+        if (strip_tags($request->input('content')) == "") {
+            return response()->json(['error' => 'Content required.', 'message' => 'The content field is required.'], 422);
+        }
 
         $quote = Quote::query()->create([
             'content' => strip_tags($request->input('content'), ['b']), // Let's safety store user input
             'name' => $request->input('name') ?? null,
             'ip_address' => $request->ip()
         ]);
+
+        AuditLog::query()->create([
+            'quote_uuid' => $quote->uuid,
+            'log' => 'Quote created.'
+        ]);
+
+        SendWebhook::dispatch($quote);
 
         return response()->json(['success' => 'Created successfully.', 'data' => $quote->jsonSerialize()]);
     }
@@ -58,7 +74,7 @@ class QuoteController extends Controller
         if (!$quote || $quote->status != Quote::APPROVED)
             return response()->json(['error' => 'Not found.'], 404);
 
-        return response()->json(['success' => 'Found successfully.', 'data' => $quote->jsonSerialize()]);
+        return response()->json(['success' => 'Found successfully.', 'data' => $quote->append('audit_logs')->jsonSerialize()]);
     }
 
     /**

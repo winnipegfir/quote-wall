@@ -30,4 +30,9 @@ class Quote extends Model
             $model->setAttribute($model->getKeyName(), Str::uuid());
         });
     }
+
+    public function getAuditLogsAttribute()
+    {
+        return $this->hasMany(AuditLog::class)->orderByDesc('created_at')->get();
+    }
 }
