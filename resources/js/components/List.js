@@ -55,7 +55,7 @@ export default function () {
     }
 
     useEffect(() => {
-        setFetching(true);
+        getQuotes();
 
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
