@@ -5,10 +5,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faSpinner} from "@fortawesome/free-solid-svg-icons";
 import {Helmet, HelmetData} from "react-helmet-async";
 
-let url = "/api/quotes";
 const helmetData = new HelmetData({});
 
 export default function () {
+    const [ url, setUrl ] = useState("/api/quotes");
     const [ fetching, setFetching ] = useState(false);
     const [ isLoading, setLoading ] = useState(false);
     const [ end, setEnd ] = useState(false);
@@ -26,10 +26,10 @@ export default function () {
                 setQuotes(quotes => [...quotes, ...res.data.data]);
 
                 if (res.data.next_page_url) {
-                    url = res.data.next_page_url;
+                    setUrl(res.data.next_page_url);
                 } else {
                     setEnd(true);
-                    url = null;
+                    setUrl(null);
                 }
 
                 setFetching(false);
