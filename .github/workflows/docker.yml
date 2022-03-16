@@ -53,7 +53,7 @@ jobs:
           docker push --all-tags $IMAGE_ID
 
       - name: Update rancher deployment on live website
-        if: github.ref == 'refs/tags/'*
+        if: startsWith(github.ref, 'refs/tags/')
         uses: th0th/rancher-redeploy-workload@v0.9
         env:
           RANCHER_BEARER_TOKEN: ${{ secrets.RANCHER_BEARER_TOKEN }}
