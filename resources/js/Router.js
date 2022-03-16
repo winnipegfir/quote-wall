@@ -119,7 +119,7 @@ function AdminLayout() {
 
                     {
                         isAuthenticated && (
-                            user.is_admin || user.is_super_admin && (
+                            (user.is_admin || user.is_super_admin) && (
                                 <>
                                     <NavLink className="text-white" onClick={() => {navigate("/admin/quotes")}}>Quotes</NavLink>
                                 </>
