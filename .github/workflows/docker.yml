@@ -7,7 +7,7 @@ on:
 
     # Publish `v1.2.3` tags as releases.
     tags:
-      - *
+      - v*
 
 env:
   IMAGE_NAME: quote-wall
@@ -52,10 +52,8 @@ jobs:
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && docker tag image $IMAGE_ID:$REF
           docker push --all-tags $IMAGE_ID
 
-
-
       - name: Update rancher deployment on live website
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/tags/'*
         uses: th0th/rancher-redeploy-workload@v0.9
         env:
           RANCHER_BEARER_TOKEN: ${{ secrets.RANCHER_BEARER_TOKEN }}

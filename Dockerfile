@@ -44,9 +44,16 @@ RUN apk add \
     curl \
     libxml2-dev \
     oniguruma-dev \
+    libzip-dev \
+    libjpeg-turbo-dev \
+    libpng-dev \
+    freetype-dev \
     && rm -rf /var/cache/apk/
 
-RUN docker-php-ext-install dom bcmath mbstring
+RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl dom bcmath
+RUN docker-php-ext-configure gd --with-jpeg --with-freetype
+RUN docker-php-ext-install gd
+
 
 WORKDIR /var/www/app
 
