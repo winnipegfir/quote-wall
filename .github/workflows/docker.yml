@@ -51,7 +51,7 @@ jobs:
         env:
           RANCHER_BEARER_TOKEN: ${{ secrets.RANCHER_BEARER_TOKEN }}
           RANCHER_CLUSTER_ID: c-k4z5b
-          RANCHER_NAMESPACE: deployment:quote-wall
+          RANCHER_NAMESPACE: quote-wall
           RANCHER_PROJECT_ID: p-h6svk
           RANCHER_URL: ${{ secrets.RANCHER_URL }}
-          RANCHER_WORKLOADS: 'web'
+          RANCHER_WORKLOADS: 'web,queue-worker'

@@ -12,6 +12,7 @@ class TrustProxies extends Middleware
      *
      * @var array<int, string>|string|null
      */
+
     protected $proxies = ["10.244.0.0/16", "174.138.113.176"]; // K8s/LB IPs
 
     /**
