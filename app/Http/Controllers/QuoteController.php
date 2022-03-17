@@ -13,6 +13,11 @@ use Woeler\DiscordPhp\Webhook\DiscordWebhook;
 
 class QuoteController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('ip_ban');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -85,10 +90,9 @@ class QuoteController extends Controller
     public function random(): JsonResponse
     {
         $quote = Quote::query()
-            ->select('uuid')
             ->where('status', Quote::APPROVED)->inRandomOrder()
             ->first();
 
-        return response()->json(['success' => 'Found successfully.', 'uuid' => $quote->uuid]);
+        return response()->json(['success' => 'Found successfully.', 'uuid' => $quote->uuid, 'data' => $quote]);
     }
 }

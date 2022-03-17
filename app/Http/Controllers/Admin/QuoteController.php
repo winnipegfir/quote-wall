@@ -5,11 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\AuditLog;
 use App\Models\Quote;
-use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class QuoteController extends Controller
@@ -57,12 +55,12 @@ class QuoteController extends Controller
             'status' => ['int', 'min:2', 'max:3']
         ]);
 
-        if (strip_tags($request->input('content')) == "") {
+        if (strip_tags($request->input('content'), ['img']) == "") {
             return response()->json(['error' => 'Content required.', 'message' => 'The content field is required.'], 422);
         }
 
         $quote->update([
-            'content' => strip_tags($request->input('content'), ['b']),
+            'content' => strip_tags($request->input('content'), ['b', 'img']),
             'name' => $request->input('name') ?? null,
             'status' => $request->input('status')
         ]);

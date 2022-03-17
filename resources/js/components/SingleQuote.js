@@ -13,7 +13,7 @@ import {redirectToRandomQuote} from "../functions";
 const helmetData = new HelmetData({});
 
 export default function () {
-    let { uuid } = useParams();
+    const { uuid } = useParams();
     const [ quote, setQuote ] = useState(null);
     const [ isLoaded, setLoaded ] = useState(false);
     const navigate = useNavigate();
@@ -22,7 +22,6 @@ export default function () {
         return <NoMatch />
 
     useEffect(() => {
-
         axios.get("/api/quotes/" + uuid)
             .then((res) => {
                 res = res.data

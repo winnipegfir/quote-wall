@@ -5,8 +5,7 @@ import {useNavigate} from "react-router-dom";
 import DOMPurify from "dompurify";
 
 export default function (props) {
-    const quote = props.quote;
-    const showCopy = props.copy;
+    const { quote, showCopy } = props;
     const navigate = useNavigate();
 
     function goToQuote(uuid) {
