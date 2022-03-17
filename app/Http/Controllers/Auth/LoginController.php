@@ -21,6 +21,7 @@ class LoginController extends Controller
 
     public function redirect(): \Illuminate\Routing\Redirector|\Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse
     {
+        if (Auth::check()) Auth::logout();
         if (Session::has('state')) Session::forget('state');
         if (Session::has('token')) Session::forget('token');
 
@@ -86,7 +87,7 @@ class LoginController extends Controller
         $user = User::query()->find($details->data->cid);
 
         if (!$user) {
-            return response()->json(['error' => 'Forbidden', 'hint' => 'You are not permitted to login to this website at this time.'], 403);
+            return response()->json(['error' => 'Forbidden', 'hint' => 'You are not permitted to login to this website at this time. No user data has been saved.'], 403);
         }
 
         Auth::login($user, true);

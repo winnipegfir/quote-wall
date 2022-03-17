@@ -13,7 +13,7 @@ export default function () {
     const [_, user] = useOutletContext();
     const helmetData = new HelmetData({});
 
-    const [ users, setUsers ] = useState();
+    const [ users, setUsers ] = useState({});
 
     const [showModal, setShowModal] = useState(false);
     const handleShowModal = () => setShowModal(true);

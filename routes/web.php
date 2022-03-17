@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\BanController;
+use App\Http\Controllers\Admin\QuoteController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Models\Quote;
@@ -36,9 +38,15 @@ Route::prefix('api')->group(function () {
         Route::get('user', [UserController::class, 'me']);
 
         Route::group(['prefix' => 'quotes', 'middleware' => 'permission:is_admin'], function () {
-            Route::get('numbers', [\App\Http\Controllers\Admin\QuoteController::class, 'getStatusNumbers']);
-            Route::get('status/{status}', [\App\Http\Controllers\Admin\QuoteController::class, 'getQuotesByStatus']);
-            Route::post('{uuid}', [\App\Http\Controllers\Admin\QuoteController::class, 'updateQuote']);
+            Route::get('numbers', [QuoteController::class, 'getStatusNumbers']);
+            Route::get('status/{status}', [QuoteController::class, 'getQuotesByStatus']);
+            Route::post('{uuid}', [QuoteController::class, 'updateQuote']);
+        });
+
+        Route::group(['prefix' => 'bans', 'middleware' => 'permission:is_admin'], function () {
+            Route::get('/', [BanController::class, 'index']);
+            Route::post('/', [BanController::class, 'create']);
+            Route::delete('/{id}', [BanController::class, 'destroy']);
         });
 
         Route::group(['prefix' => 'users', 'middleware' => 'permission:is_super_admin'], function () {
@@ -60,7 +68,7 @@ Route::get('{any}', function () {
     $quote = null;
 
     if (Request::segment(1) == "quote") {
-        $quote = Quote::find(Request::segment(2));
+        $quote = Quote::query()->find(Request::segment(2));
 
         if (!$quote || $quote->status !== Quote::APPROVED)
             $quote = null;

@@ -1,8 +1,8 @@
 import {useOutletContext} from "react-router-dom";
 import NoMatch from '../404';
-import {Badge, Card, Col, Dropdown, DropdownButton, Row} from "react-bootstrap";
+import {Badge, Button, Card, Col, Dropdown, DropdownButton, Row} from "react-bootstrap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faFilter} from "@fortawesome/free-solid-svg-icons";
+import {faFilter, faRefresh} from "@fortawesome/free-solid-svg-icons";
 import {useEffect, useState} from "react";
 import {Helmet, HelmetData} from "react-helmet-async";
 import QuoteCard from "./QuoteCard";
@@ -41,6 +41,9 @@ export default function () {
     }
 
     function reloadSelf() {
+        if (type === undefined)
+            return;
+
         axios.get(`/api/admin/quotes/status/${type}`)
             .then((res) => {
                 setQuotes(res.data.data);
@@ -67,20 +70,26 @@ export default function () {
 
                     <Row className="justify-content-center">
                         <Col md={10} className="d-flex flex-column">
-                            <DropdownButton title={<><FontAwesomeIcon icon={faFilter} /> Filter</>} className="mb-3">
-                                <Dropdown.Item onClick={handleFilterChange} id="all">
-                                    All Quotes <Badge className="float-end mt-1 ms-2">{ numbers.all }</Badge>
-                                </Dropdown.Item>
-                                <Dropdown.Item onClick={handleFilterChange} id="pending">
-                                    Pending Review <Badge className="float-end mt-1 ms-2">{ numbers.pending }</Badge>
-                                </Dropdown.Item>
-                                <Dropdown.Item onClick={handleFilterChange} id="approved">
-                                    Approved <Badge className="float-end mt-1 ms-2">{ numbers.approved }</Badge>
-                                </Dropdown.Item>
-                                <Dropdown.Item onClick={handleFilterChange} id="rejected">
-                                    Rejected <Badge className="float-end mt-1 ms-2">{ numbers.rejected }</Badge>
-                                </Dropdown.Item>
-                            </DropdownButton>
+                            <div className="d-flex flex-row mb-2">
+                                <DropdownButton className="d-flex flex-column me-2" title={<><FontAwesomeIcon icon={faFilter} /> Filter</>}>
+                                    <Dropdown.Item onClick={handleFilterChange} id="all">
+                                        All Quotes <Badge className="float-end mt-1 ms-2">{ numbers.all }</Badge>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={handleFilterChange} id="pending">
+                                        Pending <Badge className="float-end mt-1 ms-2">{ numbers.pending }</Badge>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={handleFilterChange} id="approved">
+                                        Approved <Badge className="float-end mt-1 ms-2">{ numbers.approved }</Badge>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={handleFilterChange} id="rejected">
+                                        Rejected <Badge className="float-end mt-1 ms-2">{ numbers.rejected }</Badge>
+                                    </Dropdown.Item>
+                                </DropdownButton>
+
+                                <Button className="flex-fill" variant="secondary" onClick={reloadSelf}>
+                                    <FontAwesomeIcon icon={faRefresh}/> Reload
+                                </Button>
+                            </div>
 
                             <Row>
                                 {

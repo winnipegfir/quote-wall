@@ -1,12 +1,12 @@
-import {Card, Button, Modal, Form, Table} from "react-bootstrap";
+import {Card, Button, Modal, Form, Table, Col, Row} from "react-bootstrap";
 import {useState} from "react";
 import DOMPurify from "dompurify";
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import '@sweetalert2/theme-dark/dark.scss';
+import axios from "axios";
 
 export default function (props) {
-    const quote = props.quote;
-    const reload = props.reload;
+    const { quote, reload } = props;
 
     const [showModal, setShowModal] = useState(false);
     const handleShowModal = () => setShowModal(true);
@@ -20,7 +20,6 @@ export default function (props) {
     const [ name, setName ] = useState(quote.name);
     const [ status, setStatus ] = useState(quote.status);
 
-
     async function handleSubmit(e) {
         e.preventDefault();
 
@@ -30,8 +29,10 @@ export default function (props) {
         if (quote !== null && quote !== undefined)
             formData.append('content', content);
 
-        if (name !== null && name !== undefined)
+        if (name !== null && name !== undefined && name !== "") {
             formData.append('name', name);
+            console.log(name);
+        }
 
         formData.append('status', status);
 
@@ -80,6 +81,55 @@ export default function (props) {
         e.target.disabled = false;
     }
 
+    async function banIp() {
+        handleHideModal();
+
+        Swal.fire({
+            title: `Reason for IP ban`,
+            input: 'text',
+            inputAttributes: {
+                autocapitalize: 'off'
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Submit',
+            allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.post(`/api/admin/bans`, { 'ip_address': quote.ip_address, 'comment': result.value })
+                    .then(() => {
+                        Swal.fire({
+                            icon: "success",
+                            text: "IP banned successfully."
+                        });
+                    }).catch((error) => {
+                        switch (error.response.status) {
+                            case 422:
+                                Swal.fire({
+                                    icon: "error",
+                                    html: "Validation error. Check your input and try again.<br><br><code>" + error.response.data.message + "</code>"
+                                });
+                                break;
+                            case 429:
+                                Swal.fire({
+                                    icon: "error",
+                                    text: "Too many requests. You are being rate limited."
+                                });
+                                break;
+                            default:
+                                Swal.fire({
+                                    icon: "error",
+                                    text: "An error occurred."
+                                });
+                        }
+
+                        console.log(error.response)
+                    });
+            } else {
+                // Do nothing
+            }
+        })
+    }
+
     return (
         <>
             <Card id={quote.uuid}>
@@ -124,9 +174,9 @@ export default function (props) {
                         <br/>
                         <Form.Group controlId="formName">
                             <Form.Control aria-valuemax={50}
-                                          value={name}
+                                          value={name ?? ""}
                                           onChange={event => { setName(event.target.value) }}
-                                          placeholder={"(optional)"}/>
+                                          placeholder={"Anonymous if null (optional)"}/>
                             <Form.Text>Name</Form.Text>
                         </Form.Group>
                         <br/>
@@ -144,10 +194,18 @@ export default function (props) {
                             <Form.Text>Status</Form.Text>
                         </Form.Group>
                         <br/>
-                        <Form.Group controlId="formIP">
-                            <Form.Control value={quote.ip_address} disabled={true} />
-                            <Form.Text>IP Address</Form.Text>
-                        </Form.Group>
+                        <Row>
+                            <Col md={6}>
+                                <Form.Group controlId="formIP">
+                                    <Form.Control value={quote.ip_address} disabled={true} />
+                                    <Form.Text>IP Address</Form.Text>
+                                </Form.Group>
+                            </Col>
+                            <Col md={6}>
+                                <Button className="w-100" onClick={banIp}>Ban IP</Button>
+                            </Col>
+                        </Row>
+
                         <br/>
                         <Form.Group controlId="formSubmitted">
                             <Form.Control value={niceDateTime(quote.created_at)} disabled={true} />
