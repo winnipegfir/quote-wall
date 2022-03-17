@@ -5,7 +5,7 @@ import {useNavigate} from "react-router-dom";
 import DOMPurify from "dompurify";
 
 export default function (props) {
-    const { quote, showCopy } = props;
+    const { quote, copy } = props;
     const navigate = useNavigate();
 
     function goToQuote(uuid) {
@@ -23,7 +23,7 @@ export default function (props) {
                     <small className="ms-auto">
                         { niceDateTime(quote.created_at) }
                         {
-                            showCopy && <FontAwesomeIcon className="ps-2 text-white-50" icon={faUpRightFromSquare} onClick={() => { goToQuote(quote.uuid) }} />
+                            copy && <FontAwesomeIcon className="ps-2 text-white-50" icon={faUpRightFromSquare} onClick={() => { goToQuote(quote.uuid) }} />
                         }
                     </small>
                 </div>
