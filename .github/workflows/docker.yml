@@ -50,8 +50,8 @@ jobs:
         uses: th0th/rancher-redeploy-workload@v0.9
         env:
           RANCHER_BEARER_TOKEN: ${{ secrets.RANCHER_BEARER_TOKEN }}
-          RANCHER_CLUSTER_ID: c-k4z5b
-          RANCHER_NAMESPACE: quote-wall
-          RANCHER_PROJECT_ID: p-h6svk
+          RANCHER_CLUSTER_ID: 'c-k4z5b'
+          RANCHER_NAMESPACE: 'quote-wall'
+          RANCHER_PROJECT_ID: 'p-h6svk'
           RANCHER_URL: ${{ secrets.RANCHER_URL }}
           RANCHER_WORKLOADS: 'web,queue-worker'
