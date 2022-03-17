@@ -13,6 +13,7 @@ vendor/**/Tests*
 **/*node_modules
 
 **.git
+**.github
 .idea
 **.gitignore
 **.gitattributes
@@ -28,5 +29,3 @@ phpspec.yml
 
 Dockerfile
 docker-compose.yml
-run
-run.ps1
