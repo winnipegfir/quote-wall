@@ -9,11 +9,12 @@ import Swal from "sweetalert2";
 const helmetData = new HelmetData({});
 
 export default function () {
-    const [ url, setUrl ] = useState("/api/quotes");
+    const [ url, setUrl ] = useState("/api/quotes?search=");
     const [ fetching, setFetching ] = useState(false);
     const [ isLoading, setLoading ] = useState(false);
     const [ end, setEnd ] = useState(false);
     const [ quotes, setQuotes ] = useState([]);
+    const [ searchTerm, setSearchTerm ] = useState(null);
 
     async function getQuotes() {
         if (url == null) {
@@ -41,6 +42,11 @@ export default function () {
                         icon: "error",
                         text: `Too many requests. You are being rate limited. Try again in ${err.response.headers["retry-after"]} seconds.`
                     });
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        text: `An error occurred. Please refresh the page and try again.`
+                    });
                 }
 
                 console.log(err.response);
@@ -60,23 +66,28 @@ export default function () {
         setFetching(true);
     }
 
-    function handleSearch(string) {
-        // Reset variables
-        setEnd(false);
-        setQuotes([]);
-
-        // Search for quotes
-        setUrl(`/api/quotes?search=${encodeURIComponent(string)}`);
-
-        setFetching(true);
-    }
-
     useEffect(() => {
         getQuotes();
 
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, [])
+
+    useEffect(() => {
+        const delayFunction = setTimeout(() => {
+            if (searchTerm != null) {
+                // Reset variables
+                setEnd(false);
+                setQuotes([]);
+
+                // Search for quotes
+                setUrl(`/api/quotes?search=${encodeURIComponent(searchTerm)}`);
+                setFetching(true);
+            }
+        }, 400);
+
+        return () => clearTimeout(delayFunction);
+    }, [searchTerm]);
 
     useEffect(() => {
         if (!fetching)
@@ -96,7 +107,7 @@ export default function () {
                 <Row className="justify-content-center mb-3">
                     <Col lg={6} md={12} aria-colspan={12}>
                         <Form>
-                            <Form.Control type="text" placeholder="Search for a quote..." onChange={event => {handleSearch(event.target.value)}} />
+                            <Form.Control type="search" placeholder="Search for a quote..." onChange={event => {setSearchTerm(event.target.value)}} />
                         </Form>
                     </Col>
                 </Row>
