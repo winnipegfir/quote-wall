@@ -7,10 +7,6 @@ use App\Models\AuditLog;
 use App\Models\Quote;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Woeler\DiscordPhp\Exception\DiscordInvalidResponseException;
-use Woeler\DiscordPhp\Message\DiscordEmbedMessage;
-use Woeler\DiscordPhp\Webhook\DiscordWebhook;
-
 class QuoteController extends Controller
 {
     public function __construct()

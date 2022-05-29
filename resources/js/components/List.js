@@ -4,6 +4,7 @@ import QuoteCard from "./QuoteCard";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faSpinner} from "@fortawesome/free-solid-svg-icons";
 import {Helmet, HelmetData} from "react-helmet-async";
+import Swal from "sweetalert2";
 
 const helmetData = new HelmetData({});
 
@@ -35,7 +36,15 @@ export default function () {
                 setFetching(false);
                 setLoading(false);
             }).catch((err) => {
-                console.log(err);
+                if (err.response.status === 429) {
+                    Swal.fire({
+                        icon: "error",
+                        text: `Too many requests. You are being rate limited. Try again in ${err.response.headers["retry-after"]} seconds.`
+                    });
+                }
+
+                console.log(err.response);
+
                 setFetching(false);
                 setLoading(false);
             });
@@ -57,7 +66,7 @@ export default function () {
         setQuotes([]);
 
         // Search for quotes
-        setUrl(`/api/quotes?search=${string}`);
+        setUrl(`/api/quotes?search=${encodeURIComponent(string)}`);
 
         setFetching(true);
     }
