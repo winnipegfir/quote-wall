@@ -2,9 +2,9 @@ import React, {useEffect, useState} from "react";
 import {BrowserRouter, Outlet, Route, Routes, useLocation, useNavigate} from "react-router-dom";
 import * as ReactDOM from "react-dom";
 import ListAllQuotes from "./components/List";
-import {Button, ButtonGroup, Form, Modal, Nav, Navbar, NavLink} from "react-bootstrap";
+import {Button, ButtonGroup, Dropdown, Modal, Nav, Navbar, NavLink} from "react-bootstrap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faPlus, faShuffle} from "@fortawesome/free-solid-svg-icons";
+import {faArrowDown, faPlus, faShuffle} from "@fortawesome/free-solid-svg-icons";
 import CreateModal from "./components/CreateModal";
 import SingleQuote from "./components/SingleQuote";
 import NoMatch from "./components/404";

@@ -21,14 +21,16 @@ class QuoteController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return JsonResponse
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $quotes = Quote::query()
+        $quotes = Quote::search($request->search)
             ->where('status', Quote::APPROVED)
-            ->orderByDesc('created_at')
-            ->cursorPaginate(100);
+            ->orderBy('created_at', 'desc')
+            ->simplePaginate(100)
+            ->appends(['search' => $request->search]);
 
         return response()->json($quotes);
     }

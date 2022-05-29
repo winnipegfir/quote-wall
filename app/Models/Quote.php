@@ -5,14 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Laravel\Scout\Searchable;
 
 class Quote extends Model
 {
+    use HasFactory, Searchable;
+
     const PENDING_REVIEW =  1;
     const APPROVED =        2;
     const REFUSED =         3;
-
-    use HasFactory;
 
     protected $primaryKey = 'uuid';
     protected $keyType = 'string';
@@ -34,5 +35,19 @@ class Quote extends Model
     public function getAuditLogsAttribute()
     {
         return $this->hasMany(AuditLog::class)->orderByDesc('created_at')->get();
+    }
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array
+     */
+    public function toSearchableArray(): array
+    {
+        $array = $this->toArray();
+
+        $array['status'] = $this->status;
+
+        return $array;
     }
 }

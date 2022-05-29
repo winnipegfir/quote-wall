@@ -1,4 +1,4 @@
-import {Col, Container, Row} from "react-bootstrap";
+import {Col, Container, Form, FormText, Row} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import QuoteCard from "./QuoteCard";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -45,11 +45,19 @@ export default function () {
         let userScrollHeight = window.innerHeight + window.scrollY;
         let windowBottomHeight = document.documentElement.offsetHeight - 500;
 
-        console.log("user", userScrollHeight);
-        console.log("bottom", windowBottomHeight);
-
         if (userScrollHeight < windowBottomHeight)
             return;
+
+        setFetching(true);
+    }
+
+    function handleSearch(string) {
+        // Reset variables
+        setEnd(false);
+        setQuotes([]);
+
+        // Search for quotes
+        setUrl(`/api/quotes?search=${string}`);
 
         setFetching(true);
     }
@@ -76,6 +84,13 @@ export default function () {
             </Helmet>
 
             <Container fluid>
+                <Row className="justify-content-center mb-3">
+                    <Col lg={6} md={12} aria-colspan={12}>
+                        <Form>
+                            <Form.Control type="text" placeholder="Search for a quote..." onChange={event => {handleSearch(event.target.value)}} />
+                        </Form>
+                    </Col>
+                </Row>
                 <Row>
                     {
                         quotes.length > 0 && (
